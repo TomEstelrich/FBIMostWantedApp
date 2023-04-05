@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:fbi_most_wanted_app/model/people_model.dart';
 import 'package:fbi_most_wanted_app/services/network_service.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class PeopleListView extends StatefulWidget {
+  const PeopleListView({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _PeopleListViewState createState() => _PeopleListViewState();
 }
 
-class _HomeState extends State<Home> {
-  late List<Item> _people = [];
+class _PeopleListViewState extends State<PeopleListView> {
+  // Lifecycle
 
   @override
   void initState() {
@@ -18,17 +18,12 @@ class _HomeState extends State<Home> {
     _getData();
   }
 
-  void _getData() async {
-    _people = (await ApiService().getUsers())!;
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
-  }
+  // Internal
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FBI Most Wanted'),
-      ),
+      appBar: AppBar(title: const Text('FBI Most Wanted')),
       body: _people.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -37,21 +32,13 @@ class _HomeState extends State<Home> {
                 return Card(
                   child: Column(
                     children: [
-                      Text(
-                        'Name',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 15),
-                      ),
+                      _nameText,
                       Text(
                         _people[index].title ?? 'N/A',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        'Nationality',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 15),
-                      ),
+                      _nationalityText,
                       Text(
                         _people[index].nationality ?? 'N/A',
                         style: TextStyle(
@@ -66,5 +53,26 @@ class _HomeState extends State<Home> {
               },
             ),
     );
+  }
+
+  // Private
+
+  late List<Item> _people = [];
+
+  var _nameText = Text(
+    'Name',
+    textAlign: TextAlign.left,
+    style: TextStyle(fontSize: 15),
+  );
+
+  var _nationalityText = Text(
+    'Nationality',
+    textAlign: TextAlign.left,
+    style: TextStyle(fontSize: 15),
+  );
+
+  void _getData() async {
+    _people = (await ApiService.instance.getUsers())!;
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 }

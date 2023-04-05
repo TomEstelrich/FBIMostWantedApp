@@ -5,6 +5,9 @@ import 'package:fbi_most_wanted_app/constants.dart';
 import 'package:fbi_most_wanted_app/model/people_model.dart';
 
 class ApiService {
+  ApiService._();
+  static final instance = ApiService._();
+
   Future<List<Item>?> getUsers() async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listEndpoint);
@@ -14,8 +17,8 @@ class ApiService {
         People _people = peopleFromJson(response.body);
         return _people.items;
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (error) {
+      log(error.toString());
     }
   }
 }
