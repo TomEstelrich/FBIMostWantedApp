@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:fbi_most_wanted_app/model/person.dart';
 
-People peopleFromJson(String str) => People.fromJson(json.decode(str));
-String peopleToJson(People data) => json.encode(data.toJson());
+// String peopleToJson(People data) => json.encode(data.toJson());
 
 class People {
+  // Lifecycle
+
   People({
     this.items,
   });
@@ -12,6 +13,8 @@ class People {
   int? total;
   List<Person>? items;
   int? page;
+
+  // Internal
 
   factory People.fromJson(Map<String, dynamic> json) => People(
         items: json["items"] == null

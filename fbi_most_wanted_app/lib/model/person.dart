@@ -1,6 +1,6 @@
-import 'dart:convert';
-
 class Person {
+  // Lifecycle
+
   Person({
     this.id,
     this.title,
@@ -22,6 +22,8 @@ class Person {
   String? details;
   String? caution;
   List<String>? images;
+
+  // Internal
 
   factory Person.fromJson(Map<String, dynamic> json) => Person(
         id: json["@id"],

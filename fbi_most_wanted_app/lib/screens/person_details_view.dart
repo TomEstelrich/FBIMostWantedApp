@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fbi_most_wanted_app/model/person.dart';
-import 'package:fbi_most_wanted_app/model/people.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class PersonDetailView extends StatelessWidget {
@@ -51,7 +50,6 @@ class PersonDetailView extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 16.0),
           ],
         ),
       ),

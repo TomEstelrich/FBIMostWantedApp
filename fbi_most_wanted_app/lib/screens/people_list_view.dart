@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fbi_most_wanted_app/model/person.dart';
-import 'package:fbi_most_wanted_app/model/people.dart';
 import 'package:fbi_most_wanted_app/screens/person_details_view.dart';
 import 'package:fbi_most_wanted_app/services/network_service.dart';
 
 class PeopleListView extends StatefulWidget {
-  const PeopleListView({Key? key}) : super(key: key);
+  const PeopleListView({super.key});
 
   @override
   _PeopleListViewState createState() => _PeopleListViewState();
@@ -111,7 +110,7 @@ class _PeopleListViewState extends State<PeopleListView> {
   }
 
   void _getData() async {
-    _people = (await ApiService.instance.getUsers())!;
+    _people = await ApiService.instance.getUsers() ?? [];
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 }
