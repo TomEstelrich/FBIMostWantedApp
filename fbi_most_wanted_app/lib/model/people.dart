@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:fbi_most_wanted_app/model/person.dart';
 
-// String peopleToJson(People data) => json.encode(data.toJson());
-
 class People {
   // Lifecycle
 

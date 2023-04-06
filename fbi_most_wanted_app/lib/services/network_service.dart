@@ -13,9 +13,12 @@ class ApiService {
 
   // Public
 
-  Future<List<Person>?> getUsers() async {
+  Future<List<Person>?> getUsers(int page) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listEndpoint);
+      var url = Uri.parse(ApiConstants.baseUrl +
+          ApiConstants.listEndpoint +
+          ApiConstants.pageParameter +
+          '$page');
       var response = await http.get(url);
 
       if (response.statusCode == 200) {

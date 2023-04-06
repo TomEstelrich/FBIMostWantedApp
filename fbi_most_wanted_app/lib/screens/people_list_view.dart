@@ -4,7 +4,7 @@ import 'package:fbi_most_wanted_app/screens/person_details_view.dart';
 import 'package:fbi_most_wanted_app/services/network_service.dart';
 
 class PeopleListView extends StatefulWidget {
-  const PeopleListView({super.key});
+  const PeopleListView({Key? key}) : super(key: key);
 
   @override
   _PeopleListViewState createState() => _PeopleListViewState();
@@ -16,7 +16,7 @@ class _PeopleListViewState extends State<PeopleListView> {
   @override
   void initState() {
     super.initState();
-    _getData();
+    _getData(_currentPage);
   }
 
   // Internal
@@ -25,30 +25,42 @@ class _PeopleListViewState extends State<PeopleListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('FBI Most Wanted')),
-      body: _people.isEmpty
+      body: _isLoading && _people.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              padding: EdgeInsets.all(16.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: _people.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PersonDetailView(person: _people[index]),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
+          : NotificationListener<ScrollNotification>(
+              onNotification: (scrollNotification) {
+                if (scrollNotification is ScrollEndNotification &&
+                    scrollNotification.metrics.extentAfter == 0) {
+                  _loadMore();
+                  return true;
+                }
+                return false;
+              },
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 0.7,
+                ),
+                itemCount: _people.length + (_isLoading ? 1 : 0),
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == _people.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PersonDetailView(person: _people[index]),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         boxShadow: [
                           BoxShadow(
@@ -58,36 +70,38 @@ class _PeopleListViewState extends State<PeopleListView> {
                             offset: Offset(0, 2),
                           ),
                         ],
-                        color: Colors.white),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                            child: Image.network(
+                              _people[index].images?.isNotEmpty == true
+                                  ? _people[index].images![0]
+                                  : "https://via.placeholder.com/150",
+                              width: double.infinity,
+                              height: 200.0,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: Image.network(
-                            _people[index].images?.isNotEmpty == true
-                                ? _people[index].images![0]
-                                : "https://via.placeholder.com/150",
-                            width: double.infinity,
-                            height: 200.0,
-                            fit: BoxFit.cover,
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: _titleFormatterFor(
+                                _people[index].title ?? "N/A"),
                           ),
-                        ),
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
-                              _titleFormatterFor(_people[index].title ?? "N/A"),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }
@@ -95,11 +109,30 @@ class _PeopleListViewState extends State<PeopleListView> {
   // Private
 
   late List<Person> _people = [];
+  bool _isLoading = false;
+  int _currentPage = 1;
+
+  Future<void> _getData(int page) async {
+    setState(() {
+      _isLoading = true;
+    });
+    final people = await ApiService.instance.getUsers(page);
+    setState(() {
+      _isLoading = false;
+      _people.addAll(people ?? []);
+    });
+  }
+
+  void _loadMore() {
+    if (_isLoading) return;
+    _currentPage++;
+    _getData(_currentPage);
+  }
 
   Text _titleFormatterFor(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.bold,
         color: Colors.blueAccent,
@@ -107,10 +140,5 @@ class _PeopleListViewState extends State<PeopleListView> {
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
-  }
-
-  void _getData() async {
-    _people = await ApiService.instance.getUsers() ?? [];
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 }
