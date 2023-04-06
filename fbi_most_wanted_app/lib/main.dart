@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fbi_most_wanted_app/screens/listView.dart';
+import 'package:fbi_most_wanted_app/screens/people_list_view.dart';
 
 void main() => runApp(const FBIMostWantedApp());
 
