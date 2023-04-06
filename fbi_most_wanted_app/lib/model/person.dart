@@ -8,6 +8,8 @@ class Person {
     this.gender,
     this.weight,
     this.placeOfBirth,
+    this.details,
+    this.caution,
     this.images,
   });
 
@@ -17,6 +19,8 @@ class Person {
   String? gender;
   String? weight;
   String? placeOfBirth;
+  String? details;
+  String? caution;
   List<String>? images;
 
   factory Person.fromJson(Map<String, dynamic> json) => Person(
@@ -26,6 +30,8 @@ class Person {
         gender: json["sex"],
         weight: json["weight"],
         placeOfBirth: json["place_of_birth"],
+        details: json["details"],
+        caution: json["caution"],
         images: json["images"] != null
             ? List<String>.from(json["images"].map((x) => x["original"]))
             : null,
@@ -38,6 +44,8 @@ class Person {
         "gender": gender,
         "weight": weight,
         "placeOfBirth": placeOfBirth,
+        "details": details,
+        "caution": caution,
         "images": images?.map((x) => {"original": x}).toList(),
       };
 }
