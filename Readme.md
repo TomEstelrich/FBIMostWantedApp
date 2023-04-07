@@ -2,8 +2,8 @@
 <img src="./Assets/AppIcon.png" width="60" align="right"/>
 <h1>FBI Most Wanted App</h1>
 
-![Flutter](https://img.shields.io/badge/Swift-5.0-orange.svg?longCache=true&style=flat&logo=flutter)
-[![iOS](https://img.shields.io/badge/iOS-14.0+-lightgrey.svg?longCache=true&?style=flat&logo=apple)][iOS]
+![Flutter](https://img.shields.io/badge/Flutter-3.7.10-blue.svg?longCache=true&style=flat&logo=flutter)
+[![iOS](https://img.shields.io/badge/iOS-16.4+-lightgrey.svg?longCache=true&?style=flat&logo=apple)][iOS]
 [![](https://img.shields.io/badge/Twitter-%231DA1F2.svg?&style=flat&logo=twitter&logoColor=white)][Twitter]
 [![](https://img.shields.io/badge/Mastodon-5A46DA.svg?&style=flat&logo=mastodon&logoColor=white)][Mastodon]
 
